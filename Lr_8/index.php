@@ -1,3 +1,7 @@
+<?php
+$xml = simplexml_load_file('book.xml');
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,13 +16,14 @@
             <th>Дата публікації</th>
         </tr>
         <?php
-        $xml = simplexml_load_file('book.xml');
-        echo "<tr>";
-        echo "<td>{$xml->title}</td>";
-        echo "<td>{$xml->author}</td>";
-        echo "<td>{$xml->publisher}</td>";
-        echo "<td>{$xml->publication_date}</td>";
-        echo "</tr>";
+        foreach ($xml->book as $book) {
+            echo "<tr>";
+            echo "<td>{$book->title}</td>";
+            echo "<td>{$book->author}</td>";
+            echo "<td>{$book->publisher}</td>";
+            echo "<td>{$book->publication_date}</td>";
+            echo "</tr>";
+        }
         ?>
     </table>
 </body>

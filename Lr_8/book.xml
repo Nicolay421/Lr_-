@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<book>
-    <title></title>
-    <author></author>
-    <publisher></publisher>
-    <publication_date></publication_date>
-</book>
+<books>
+    <book>
+        <title>Назва книги 1</title>
+        <author>Автор 1</author>
+        <publisher>Видавництво 1</publisher>
+        <publication_date>Дата публікації 1</publication_date>
+    </book>
+    <book>
+        <title>Назва книги 2</title>
+        <author>Автор 2</author>
+        <publisher>Видавництво 2</publisher>
+        <publication_date>Дата публікації 2</publication_date>
+    </book>
+    <book>
+        <title>Назва книги 3</title>
+        <author>Автор 3</author>
+        <publisher>Видавництво 3</publisher>
+        <publication_date>Дата публікації 3</publication_date>
+    </book>
+</books>
