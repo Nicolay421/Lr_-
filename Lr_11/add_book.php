@@ -1,23 +1,37 @@
 <?php
 $servername = "localhost";
-$username = "ваш_ім'я_користувача";
-$password = "ваш_пароль";
-$dbname = "books_database";
+$username = "root";
+$password = "";
+$dbname = "books";
 
-// Підключення до бази даних
+
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Перевірка підключення
+
 if ($conn->connect_error) {
     die("Помилка підключення: " . $conn->connect_error);
 }
 
-// Отримання даних з форми
-$title = $_POST['title'];
-$author = $_POST['author'];
-$published_year = $_POST['published_year'];
 
-// Додавання книги до таблиці
+if (isset($_POST['title'])) {
+    $title = $_POST['title'];
+} else {
+    $title = '';
+}
+
+if (isset($_POST['author'])) {
+    $author = $_POST['author'];
+} else {
+    $author = '';
+}
+
+if (isset($_POST['published_year'])) {
+    $published_year = $_POST['published_year'];
+} else {
+    $published_year = '';
+}
+
+
 $sql = "INSERT INTO books (title, author, published_year) VALUES ('$title', '$author', '$published_year')";
 
 if ($conn->query($sql) === TRUE) {

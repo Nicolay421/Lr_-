@@ -1,10 +1,9 @@
 <?php
 $servername = "localhost";
-$username = "ваш_ім'я_користувача";
-$password = "ваш_пароль";
-$dbname = "books_database";
+$username = "root";
+$password = "";
+$dbname = "books";
 
-// Підключення до бази даних
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Перевірка підключення
@@ -12,7 +11,6 @@ if ($conn->connect_error) {
     die("Помилка підключення: " . $conn->connect_error);
 }
 
-// Вибірка всіх книг з бази даних
 $sql = "SELECT * FROM books";
 $result = $conn->query($sql);
 
