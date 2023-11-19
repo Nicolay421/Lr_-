@@ -1,18 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Web Page Scraper</title>
+</head>
+<body>
 <?php
-echo '<p>
-	31 жовтня відбулось засідання клубу любителів англійської мови «Golden club» у форматі костюмованої онлайн-вечірки.
-</p>
-<p>
-	Студенти-учасники клубу у тематичному вбранні спілкувалися англійською мовою у невимушеній атмосфері, розширили свій словниковий запас з теми «Традиційні свята англомовних країн»,&nbsp; взяли участь у вікторинах та жартівливих опитуваннях за темою «Halloween». Тісліченко Анна (205гр.) підготувала тематичне повідомлення з теми.
-</p>
-<p>
-	Ознайомившись з тематичною лексикою, студенти переглянули відео про історію виникнення свята та прослухали пісню-саундтрек до одноіменного фільму «Ghostbusters» виконавця Ray Parker Jr. Розібрали також граматичні конструкції, які вживаються у пісні.
-</p>
-<p>
-	Активну участь в обговоренні теми брали: Тісліченко Анна (205гр.), Севрюк Микола,&nbsp; Студенікіна Ксенія (152 гр.), Безган Катерина, Старушок Анастасія, Васильєва Дар\'я (105(151) гр.), Семенчук Марія (205гр.), Сухіна Євгеній
-</p>
-<p>
-	Засідання секції «English for fun» підготували та провели викладачі ЦК іноземної мови: Аносова Ю.П. та Павліченко О.В.
-</p>
-<img width="819" alt="Рисунок1.png" src="Рисунок1.png" height="460" title="фото 1.png" align="middle"><br>';
+include "WebPageScraper.php";
+
+$url = 'https://college.ks.ua';
+$scraper = new WebPageScraper($url);
+$scraper->loadPage();
+
+$class = 'news-list';  
+$tagName = 'div'; 
+
+$elements = $scraper->findElementsByClass($class, $tagName);
+
+if (!empty($elements)) {
+    
+    $newsItems = $elements[0]->getElementsByTagName('li');
+
+    foreach ($newsItems as $newsItem) {
+        echo $scraper->getDOM()->saveHTML($newsItem) . "\n";
+    }
+    $paginationBlocks = $scraper->getDOM()->getElementsByTagName('div');
+    
+    foreach ($paginationBlocks as $paginationBlock) {
+        if ($paginationBlock->getAttribute('class') === 'pagination') {
+            $paginationBlock->parentNode->removeChild($paginationBlock);
+        }
+    }
+} else {
+    echo "Не вдалося знайти елементи новин.";
+}
+
+echo '<img src="MyCollages (7).jpg" alt="MyCollages (7)">';
 ?>
+</body>
+</html>
