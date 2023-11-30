@@ -113,7 +113,7 @@ class Model
         return $stmt->execute();
     }
 
-    // Функція для вставки фотографії в таблицю 'photos'
+   
     public static function insertPhoto(PDO $pdo, $filename, $description = '')
     {
         $data = [
