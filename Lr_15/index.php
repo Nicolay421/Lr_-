@@ -4,36 +4,31 @@ include "config.php";
 
 session_start();
 
-// Check if the user is authenticated
 if (isset($_SESSION['user_id'])) {
-    try {
-        $photos = Model::allPhotos($pdo);
+    $photoFolder = "C:/xampp/htdocs/photo/"; 
+    $photos = scandir($photoFolder);
 
-        if (count($photos) > 0) {
-            echo "<h1>Фотогалерея</h1>";
-            echo "<div class='gallery'>";
+    echo "<h1>Фотогалерея</h1>";
+    echo "<div class='gallery'>";
 
-            foreach ($photos as $photo) {
-                echo "<div class='photo'>";
-                echo "<img src='photo.jpg/" . $photo->columns->filename . "' alt='" . $photo->columns->description . "'>";
-                echo "<p>" . $photo->columns->description . "</p>";
-                echo "</div>";
-            }
-
+    foreach ($photos as $photo) {
+        if (is_file($photoFolder . "/" . $photo) && in_array(pathinfo($photo, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif'])) {
+            $absolutePath = realpath($photoFolder . "/" . $photo);
+            echo "<div class='photo'>";
+            echo "<img src= ' photo.jpg ' " . $absolutePath . "' alt='" . pathinfo($photo, PATHINFO_FILENAME) . "'>";
+            echo "<p>" . pathinfo($photo, PATHINFO_FILENAME) . "</p>";
             echo "</div>";
-        } else {
-            echo "Фотогалерея порожня.";
         }
-    } catch (PDOException $e) {
-        echo "Помилка підключення до бази даних: " . $e->getMessage();
     }
+
+    echo "</div>";
 } else {
-    // User not authenticated, show login form
+  
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $enteredUsername = $_POST['username'];
         $enteredPassword = $_POST['password'];
 
-        // Authenticate the user
+   
         if ($enteredUsername === "Nick" && $enteredPassword === "gen76") {
             $_SESSION['user_id'] = 1; 
             header("Location: index.php");
@@ -43,7 +38,6 @@ if (isset($_SESSION['user_id'])) {
         }
     }
 
-    // Login form
     ?>
     <!DOCTYPE html>
     <html lang="en">
