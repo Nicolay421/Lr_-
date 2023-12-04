@@ -1,6 +1,6 @@
 <?php
-include "Model.php";
 include "config.php";
+include "Model.php";
 
 session_start();
 
@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Perform authentication
+    
     $user = Model::authenticateUser($pdo, $username, $password);
 
     if ($user) {

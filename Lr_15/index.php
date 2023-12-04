@@ -25,7 +25,8 @@ if (isset($_SESSION['user_id'])) {
         $enteredUsername = $_POST['username'];
         $enteredPassword = $_POST['password'];
 
-   
+    
+
         if ($enteredUsername === "Nick" && $enteredPassword === "gen76") {
             $_SESSION['user_id'] = 1; 
             header("Location: index.php");
@@ -33,7 +34,8 @@ if (isset($_SESSION['user_id'])) {
         } else {
             echo "Невірні дані входу!";
         }
-    }
+    } 
+}
 
     ?>
     <!DOCTYPE html>
@@ -61,5 +63,5 @@ if (isset($_SESSION['user_id'])) {
     </body>
     </html>
     <?php
-}
+
 ?>
