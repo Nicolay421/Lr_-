@@ -113,9 +113,10 @@ class Model
         return $stmt->execute();
     }
 
-   
     public static function insertPhoto(PDO $pdo, $filename, $description = '')
     {
+        global $photoFolder;
+
         $data = [
             'filename' => $filename,
             'description' => $description,

@@ -11,4 +11,6 @@ try {
     echo "Помилка підключення до бази даних: " . $e->getMessage();
     die();
 }
+
+$photoFolder = "C:/xampp/htdocs/photo/photo.jpg"; 
 ?>

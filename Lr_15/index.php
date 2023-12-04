@@ -5,20 +5,17 @@ include "config.php";
 session_start();
 
 if (isset($_SESSION['user_id'])) {
-    $photoFolder = "C:/xampp/htdocs/photo/"; 
-    $photos = scandir($photoFolder);
-
     echo "<h1>Фотогалерея</h1>";
     echo "<div class='gallery'>";
 
-    foreach ($photos as $photo) {
-        if (is_file($photoFolder . "/" . $photo) && in_array(pathinfo($photo, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif'])) {
-            $absolutePath = realpath($photoFolder . "/" . $photo);
-            echo "<div class='photo'>";
-            echo "<img src= ' photo.jpg ' " . $absolutePath . "' alt='" . pathinfo($photo, PATHINFO_FILENAME) . "'>";
-            echo "<p>" . pathinfo($photo, PATHINFO_FILENAME) . "</p>";
-            echo "</div>";
-        }
+    $absolutePath = realpath($photoFolder);
+    if ($absolutePath && is_file($absolutePath) && in_array(pathinfo($absolutePath, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif'])) {
+        echo "<div class='photo'>";
+        echo "<img src='" . $absolutePath . "' alt='" . pathinfo($absolutePath, PATHINFO_FILENAME) . "'>";
+        echo "<p>" . pathinfo($absolutePath, PATHINFO_FILENAME) . "</p>";
+        echo "</div>";
+    } else {
+        echo "Фото не знайдено";
     }
 
     echo "</div>";
