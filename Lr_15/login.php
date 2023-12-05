@@ -1,31 +1,49 @@
 <?php
-include "config.php";
 include "Model.php";
 
 session_start();
+try {
+    $pdo = new PDO("mysql:host=localhost;dbname=photos", "root", "");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-if (isset($_SESSION['user_id'])) {
-    header("Location: index.php");
-    exit();
-}
+    $users = Model::all($pdo, 'photos');
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    if (count($users) > 0) {
+        echo "<h1>Список користувачів</h1>";
+        echo "<table border='1'>";
+        echo "<tr><th>ID</th><th>Ім'я користувача</th><th>Email</th></tr>";
 
-    
-    $user = Model::authenticateUser($pdo, $username, $password);
+        foreach ($users as $user) {
+            echo "<tr>";
+            echo "<td>" . $user->columns->id . "</td>";
+            echo "<td>" . $user->columns->username . "</td>";
+            echo "<td>" . $user->columns->email . "</td>";
+            echo "</tr>";
+        }
 
-    if ($user) {
-        $_SESSION['user_id'] = $user->columns->id;
-        header("Location: index.php");
-        exit();
+        echo "</table>";
     } else {
-        echo "Невірні дані входу!";
+        echo "У базі даних немає користувачів.";
     }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+
+        $user = Model::authenticateUser($pdo, $username, $password);
+
+        if ($user) {
+            $_SESSION['user_id'] = $user->columns->id;
+            header("Location: index.php");
+            exit();
+        } else {
+            echo "Невірні дані входу!";
+        }
+    }
+} catch (PDOException $e) {
+    echo "Помилка підключення до бази даних: " . $e->getMessage();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
