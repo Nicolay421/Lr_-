@@ -5,11 +5,11 @@ class Model
     static $table = null;
 
     public $columns = null;
-
     public function __construct(PDO $pdo, $table, $data = null)
     {
         static::$pdo = $pdo;
-        if (!static::$table) static::$table = $table;
+        if (!static::$table)
+            static::$table = $table;
         $this->columns = (object) [];
 
         $sql = "SHOW COLUMNS FROM " . static::$table;
@@ -21,23 +21,21 @@ class Model
             $fn = $column['Field'];
             $this->columns->$fn = null;
         }
-
         if ($data) {
             foreach ($data as $key => $value) {
                 $this->$key = $value;
             }
         }
     }
-
-    protected static function createInstance(PDO $pdo, $table)
-    {
+    protected static function createInstance(PDO $pdo, $table) {
         return new static($pdo, $table);
     }
-
     public static function all(PDO $pdo, $table = null)
     {
-        if (!static::$pdo) static::$pdo = $pdo;
-        if (!static::$table) static::$table = $table;
+        if (!static::$pdo)
+            static::$pdo = $pdo;
+        if (!static::$table)
+            static::$table = $table;
         $sql = "SELECT * FROM " . static::$table;
         $stmt = static::$pdo->query($sql);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -54,8 +52,10 @@ class Model
 
     public static function find(PDO $pdo, $id, $table = null)
     {
-        if (!static::$pdo) static::$pdo = $pdo;
-        if (!static::$table) static::$table = $table;
+        if (!static::$pdo)
+            static::$pdo = $pdo;
+        if (!static::$table)
+            static::$table = $table;
         $sql = "SELECT * FROM " . static::$table . " WHERE id = :id";
         $stmt = static::$pdo->prepare($sql);
         $stmt->bindParam(':id', $id);
@@ -72,12 +72,14 @@ class Model
 
     public static function insert(PDO $pdo, $data, $table = null)
     {
-        if (!static::$pdo) static::$pdo = $pdo;
-        if (!static::$table) static::$table = $table;
+        if (!static::$pdo)
+            static::$pdo = $pdo;
+        if (!static::$table)
+            static::$table = $table;
         $columns = implode(', ', array_keys($data));
         $values = ':' . implode(', :', array_keys($data));
 
-        $sql = "INSERT INTO " . static::$table . " ($columns) VALUES ($values)";
+        $sql = "INSERT INTO static::$table ($columns) VALUES ($values)";
         $stmt = static::$pdo->prepare($sql);
         foreach ($data as $key => $value) {
             $stmt->bindValue(':' . $key, $value);
@@ -94,8 +96,8 @@ class Model
         }
         $set = implode(', ', $set);
 
-        $sql = "UPDATE " . static::$table . " SET $set WHERE id = :id";
-        $stmt = static::$pdo->prepare($sql);
+        $sql = "UPDATE $this->table SET $set WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
 
         $stmt->bindParam(':id', $this->columns->id);
         foreach ($data as $key => $value) {
@@ -107,39 +109,11 @@ class Model
 
     public function delete()
     {
-        $sql = "DELETE FROM " . static::$table . " WHERE id = :id";
+        $sql = "DELETE FROM $this->table WHERE id = :id";
         $stmt = static::$pdo->prepare($sql);
         $stmt->bindParam(':id', $this->columns->id);
         return $stmt->execute();
     }
 
-    public static function insertPhoto(PDO $pdo, $filename, $description = '')
-    {
-        global $photoFolder;
 
-        $data = [
-            'filename' => $filename,
-            'description' => $description,
-        ];
-
-        return static::insert($pdo, $data, 'photos');
-    }
-
-    public static function allPhotos(PDO $pdo)
-    {
-        $sql = "SELECT * FROM photos";
-        $stmt = $pdo->query($sql);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $photos = [];
-        foreach ($rows as $row) {
-            $photo = static::createInstance($pdo, 'photos');
-            foreach ($row as $key => $value) {
-                $photo->columns->$key = $value;
-            }
-            $photos[] = $photo;
-        }
-        return $photos;
-    }
 }
-
-?>
