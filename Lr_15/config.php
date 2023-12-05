@@ -4,5 +4,5 @@ $username = "root";
 $password = "";
 $dbname = "photos";
 
- 
 ?>
+

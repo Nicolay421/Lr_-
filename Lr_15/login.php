@@ -6,14 +6,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
 
     try {
-        $pdo = new PDO("mysql:host=localhost;dbname=photos", "root", " ");
+        $pdo = new PDO("mysql:host=localhost;dbname=photos", "root", "");
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
         echo "Помилка підключення до бази даних: " . $e->getMessage();
         exit();
     }
 
-    $sql = "SELECT * FROM users WHERE username = :username";
+    $sql = "SELECT * FROM photos WHERE username = :username";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':username', $username);
 
@@ -22,7 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION["user_id"] = $user['id'];
-            // Перенаправляємо користувача на index.php
+
+            // Redirect to index.php
             header("Location: index.php");
             exit();
         } else {
