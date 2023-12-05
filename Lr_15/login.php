@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
 
     try {
-        $pdo = new PDO("mysql:host=localhost;dbname=photos", "root", "");
+        $pdo = new PDO("mysql:host=localhost;dbname=photos", "root", " ");
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
         echo "Помилка підключення до бази даних: " . $e->getMessage();
