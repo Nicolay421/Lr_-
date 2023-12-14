@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["user_id"])) {
+if (!isset($_SESSION["id"])) {
     header("Location: login.php");
     exit();
 }
@@ -13,11 +13,10 @@ try {
     $pdo = new PDO("mysql:host=localhost;dbname=photos", "root", "");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Validate the user ID against the database, and redirect if invalid
-    $user_id = $_SESSION["user_id"];
-    $sql = "SELECT * FROM photos WHERE id = :user_id";
+    $id = $_SESSION["id"];
+    $sql = "SELECT * FROM photos WHERE id = :id";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':user_id', $user_id);
+    $stmt->bindParam(':id', $id);
 
     if (!$stmt->execute() || !$stmt->fetch(PDO::FETCH_ASSOC)) {
         header("Location: login.php");

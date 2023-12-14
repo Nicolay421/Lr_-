@@ -22,9 +22,7 @@
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Отримати дані з форми
         $username = $_POST['username'];
-        $email = $_POST['email'];
         $password = $_POST['password'];
 
         // Підключення до бази даних
