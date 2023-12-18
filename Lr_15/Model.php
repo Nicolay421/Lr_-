@@ -1,86 +1,34 @@
 <?php
-class Model
-{
-    static $pdo = null;
-    static $table = null;
+class Model {
+    protected $pdo;
+    protected $table;
 
-    public $columns = null;
-    public function __construct(PDO $pdo, $table, $data = null)
-    {
-        static::$pdo = $pdo;
-        if (!static::$table)
-            static::$table = $table;
-        $this->columns = (object) [];
-
-        $sql = "SHOW COLUMNS FROM " . static::$table;
-        $stmt = $pdo->query($sql);
-
-        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($columns as $column) {
-            $fn = $column['Field'];
-            $this->columns->$fn = null;
-        }
-        if ($data) {
-            foreach ($data as $key => $value) {
-                $this->$key = $value;
-            }
-        }
-    }
-    protected static function createInstance(PDO $pdo, $table) {
-        return new static($pdo, $table);
-    }
-    public static function all(PDO $pdo, $table = null)
-    {
-        if (!static::$pdo)
-            static::$pdo = $pdo;
-        if (!static::$table)
-            static::$table = $table;
-        $sql = "SELECT * FROM " . static::$table;
-        $stmt = static::$pdo->query($sql);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $models = [];
-        foreach ($rows as $row) {
-            $model = static::createInstance(static::$pdo, static::$table);
-            foreach ($row as $key => $value) {
-                $model->columns->$key = $value;
-            }
-            $models[] = $model;
-        }
-        return $models;
+    public function __construct(PDO $pdo, $table) {
+        $this->pdo = $pdo;
+        $this->table = $table;
     }
 
-    public static function find(PDO $pdo, $id, $table = null)
-    {
-        if (!static::$pdo)
-            static::$pdo = $pdo;
-        if (!static::$table)
-            static::$table = $table;
-        $sql = "SELECT * FROM " . static::$table . " WHERE id = :id";
-        $stmt = static::$pdo->prepare($sql);
+    public function all() {
+        $sql = "SELECT * FROM $this->table";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getById($id) {
+        $sql = "SELECT * FROM $this->table WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-        if ($stmt->rowCount() > 0) {
-            $model = static::createInstance(static::$pdo, static::$table);
-            foreach ($stmt->fetch(PDO::FETCH_ASSOC) as $key => $value) {
-                $model->columns->$key = $value;
-            }
-            return $model;
-        }
-        return null;
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public static function insert(PDO $pdo, $data, $table = null)
-    {
-        if (!static::$pdo)
-            static::$pdo = $pdo;
-        if (!static::$table)
-            static::$table = $table;
+    public function create($data) {
         $columns = implode(', ', array_keys($data));
         $values = ':' . implode(', :', array_keys($data));
 
-        $sql = "INSERT INTO static::$table ($columns) VALUES ($values)";
-        $stmt = static::$pdo->prepare($sql);
+        $sql = "INSERT INTO $this->table ($columns) VALUES ($values)";
+        $stmt = $this->pdo->prepare($sql);
+
         foreach ($data as $key => $value) {
             $stmt->bindValue(':' . $key, $value);
         }
@@ -88,8 +36,7 @@ class Model
         return $stmt->execute();
     }
 
-    public function update($data)
-    {
+    public function update($id, $data) {
         $set = [];
         foreach ($data as $key => $value) {
             $set[] = "$key = :$key";
@@ -99,7 +46,7 @@ class Model
         $sql = "UPDATE $this->table SET $set WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
 
-        $stmt->bindParam(':id', $this->columns->id);
+        $stmt->bindParam(':id', $id);
         foreach ($data as $key => $value) {
             $stmt->bindValue(':' . $key, $value);
         }
@@ -107,13 +54,11 @@ class Model
         return $stmt->execute();
     }
 
-    public function delete()
-    {
+    public function delete($id) {
         $sql = "DELETE FROM $this->table WHERE id = :id";
-        $stmt = static::$pdo->prepare($sql);
-        $stmt->bindParam(':id', $this->columns->id);
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id', $id);
         return $stmt->execute();
     }
-
-
 }
+?>

@@ -9,17 +9,13 @@
     <?php
     session_start();
 
-    require_once 'config.php';
+    include "bootstrap.php";
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = $_POST['username'];
         $password = $_POST['password'];
 
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username AND password = :password");
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $userModel->authenticate($username, $password);
 
         if ($user) {
             $_SESSION['user'] = $user;
